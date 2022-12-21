@@ -14,6 +14,14 @@ try:
         open("kontejnery.json", encoding = "utf-8") as h:
         adresy = json.load(f)
         kontejnery = json.load(h)
+        budovy = adresy['features']
+
+
+        for b in budovy:
+            geometrie = b['geometry']
+            souradnice = geometrie['coordinates']
+            wgs2jtsk.transform(souradnice)
+            print(souradnice)
 except FileNotFoundError:
     print("Soubor nebyl nalezen!")
 
