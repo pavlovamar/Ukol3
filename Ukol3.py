@@ -14,9 +14,19 @@ try:
         open("kontejnery.json", encoding = "utf-8") as h:
         adresy = json.load(f)
         kontejnery = json.load(h)
+        features = kontejnery['features']
+        for e in features:
+            properties = e['properties']
+            pristup = properties['PRISTUP']
+            pristupne = 'nevim'
+            if pristup == "volně":
+                pristupne = 'ano'
+            print(pristupne)
+
+
+
+
         budovy = adresy['features']
-
-
         for b in budovy:
             geometrie = b['geometry']
             souradnice = geometrie['coordinates']
