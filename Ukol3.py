@@ -5,14 +5,15 @@
 
 import json
 from pyproj import Transformer
+from pprint import pprint 
 
 wgs2jtsk = Transformer.from_crs(4326,5514, always_xy = True)
 
-
-with open("adresy.geojson", encoding = "utf-8") as f:
-    adresy = json.load(f)
-
-
-with open("kontejnery.json", encoding = "utf-8") as h:
-    kontejnery = json.load(h)
+try:
+    with open("adresy.geojson", encoding = "utf-8") as f, \
+        open("kontejnery.json", encoding = "utf-8") as h:
+        adresy = json.load(f)
+        kontejnery = json.load(h)
+except FileNotFoundError:
+    print("Soubor nebyl nalezen!")
 
