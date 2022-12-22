@@ -6,6 +6,7 @@
 import json
 from pyproj import Transformer
 from pprint import pprint 
+from math import sqrt
 
 wgs2jtsk = Transformer.from_crs(4326,5514, always_xy = True)
 
@@ -14,23 +15,22 @@ try:
         open("kontejnery.json", encoding = "utf-8") as h:
         data_adresy = json.load(f)
         data_kontejnery = json.load(h)
-        adresy = data_adresy['features']
-        features = data_kontejnery['features']
-        for e in features:
-            properties = e['properties']
-            pristup = properties['PRISTUP']
-            pristupne = 'nevim'
+        for kontejner in data_kontejnery['features']:
+            pristup = kontejner['properties']['PRISTUP']
             if pristup == "volně":
-                pristupne = 'ano'
-            print(pristupne)
+                zemepisna_sirka_kontejner = kontejner['geometry']['coordinates'][0]
+                zemepisna_delka_kontejner = kontejner['geometry']['coordinates'][1]
 
-        for budova in adresy:
-            zemepisna_sirka = budova['geometry']['coordinates'][0]
-            zemepisna_delka = budova['geometry']['coordinates'][1]
+
+        for adresa in data_adresy['features']:
+            zemepisna_sirka = adresa['geometry']['coordinates'][0]
+            zemepisna_delka = adresa['geometry']['coordinates'][1]
             jtsk = wgs2jtsk.transform(zemepisna_sirka,zemepisna_delka)
             zemepisna_sirka_jtsk = jtsk[0]
             zemepisna_delka_jtsk = jtsk[1]
 
+        vzdalenost = sqrt((zemepisna_sirka_kontejner-zemepisna_sirka_jtsk)**2 + (zemepisna_delka_kontejner-zemepisna_delka_jtsk)**2)
+        print(vzdalenost)
 
 
 
