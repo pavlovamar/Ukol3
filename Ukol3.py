@@ -12,9 +12,10 @@ wgs2jtsk = Transformer.from_crs(4326,5514, always_xy = True)
 try:
     with open("adresy.geojson", encoding = "utf-8") as f, \
         open("kontejnery.json", encoding = "utf-8") as h:
-        adresy = json.load(f)
-        kontejnery = json.load(h)
-        features = kontejnery['features']
+        data_adresy = json.load(f)
+        data_kontejnery = json.load(h)
+        adresy = data_adresy['features']
+        features = data_kontejnery['features']
         for e in features:
             properties = e['properties']
             pristup = properties['PRISTUP']
@@ -23,15 +24,18 @@ try:
                 pristupne = 'ano'
             print(pristupne)
 
+        for budova in adresy:
+            zemepisna_sirka = budova['geometry']['coordinates'][0]
+            zemepisna_delka = budova['geometry']['coordinates'][1]
+            jtsk = wgs2jtsk.transform(zemepisna_sirka,zemepisna_delka)
+            zemepisna_sirka_jtsk = jtsk[0]
+            zemepisna_delka_jtsk = jtsk[1]
 
 
 
-        budovy = adresy['features']
-        for b in budovy:
-            geometrie = b['geometry']
-            souradnice = geometrie['coordinates']
-            wgs2jtsk.transform(souradnice)
-            print(souradnice)
+
+
+
 except FileNotFoundError:
     print("Soubor nebyl nalezen!")
 
