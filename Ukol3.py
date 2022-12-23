@@ -43,6 +43,13 @@ try:
                     if vzdalenost < nejkratsi_vzdalenost or nejkratsi_vzdalenost == 0:
                         nejkratsi_vzdalenost = vzdalenost
                         nejblizsi_kontejner = soucasny_kontejner
+                elif pristup == "obyvatelum domu":
+                    nejkratsi_vzdalenost = 0
+                
+            if nejkratsi_vzdalenost > 10000:
+                print("Nejbližší kontejner je dále než 10 km!")
+                quit()
+
                     
                         
             adresa['properties']['vzdalenost k nejblizsimu kontejneru v metrech'] = round(nejkratsi_vzdalenost)
