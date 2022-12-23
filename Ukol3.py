@@ -7,15 +7,21 @@ import json
 from pyproj import Transformer
 from pprint import pprint 
 from math import sqrt, inf
+from statistics import mean 
 
 wgs2jtsk = Transformer.from_crs(4326,5514, always_xy = True)
 vzdalesnot = 0
-nejkratsi_vzadelnost = inf
+nejkratsi_vzdalenost = inf
+nejblizsi_kontejner = None
 try:
     with open("adresy.geojson", encoding = "utf-8") as f, \
         open("kontejnery.geojson", encoding = "utf-8") as h:
         data_adresy = json.load(f)
         data_kontejnery = json.load(h)
+        pocet_adres = len(data_adresy['features'])
+        pocet_kontejneru = len(data_kontejnery['features'])
+        print("Načteno " + str(pocet_adres) + " adres.")
+        print ("Načteno " + str(pocet_kontejneru) + " kontejnerů na tříděný odpad.")
         for adresa in data_adresy['features']:
             zem_sirka = adresa['geometry']['coordinates'][0]
             zem_delka = adresa['geometry']['coordinates'][1]
@@ -32,12 +38,15 @@ try:
                     zem_sirka_kontejner = kontejner['geometry']['coordinates'][0]
                     zem_delka_kontejner = kontejner['geometry']['coordinates'][1]
                     vzdalenost = sqrt((zem_sirka_kontejner-zem_sirka_adresa)**2 + (zem_delka_kontejner-zem_delka_adresa)**2)
-                    if vzdalenost < nejkratsi_vzadelnost:
-                        nejkratsi_vzadelnost = vzdalenost
+                    if vzdalenost < nejkratsi_vzdalenost:
+                        nejkratsi_vzdalenost = vzdalenost
                         nejblizsi_kontejner = soucasny_kontejner
-                        print(nejkratsi_vzadelnost)
-                
+                        print(nejkratsi_vzdalenost)
 
+            nejkratsi_vzdalenost = 0
+
+
+            
 
          
 
@@ -45,4 +54,3 @@ try:
 
 except FileNotFoundError:
     print("Soubor nebyl nalezen!")
-
