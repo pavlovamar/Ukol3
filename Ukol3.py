@@ -13,6 +13,7 @@ wgs2jtsk = Transformer.from_crs(4326,5514, always_xy = True)
 vzdalesnot = 0
 nejkratsi_vzdalenost = inf
 nejblizsi_kontejner = None
+novy_soubor = []
 try:
     with open("adresy.geojson", encoding = "utf-8") as f, \
         open("kontejnery.geojson", encoding = "utf-8") as h:
@@ -38,12 +39,13 @@ try:
                     zem_sirka_kontejner = kontejner['geometry']['coordinates'][0]
                     zem_delka_kontejner = kontejner['geometry']['coordinates'][1]
                     vzdalenost = sqrt((zem_sirka_kontejner-zem_sirka_adresa)**2 + (zem_delka_kontejner-zem_delka_adresa)**2)
-                    if vzdalenost < nejkratsi_vzdalenost:
+                    if vzdalenost < nejkratsi_vzdalenost or nejkratsi_vzdalenost == 0:
                         nejkratsi_vzdalenost = vzdalenost
                         nejblizsi_kontejner = soucasny_kontejner
                         print(nejkratsi_vzdalenost)
-
+            adresa['properties']['kontejner'] = nejblizsi_kontejner
             nejkratsi_vzdalenost = 0
+            novy_soubor.append(adresa)
 
 
             
@@ -54,3 +56,8 @@ try:
 
 except FileNotFoundError:
     print("Soubor nebyl nalezen!")
+
+with open("adresy_kontejnery.geojson", "w", encoding = "utf-8") as nacteni:
+    json.dump(novy_soubor, nacteni, ensure_ascii = False, indent = 2)
+
+
