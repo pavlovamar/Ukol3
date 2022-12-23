@@ -7,7 +7,7 @@ import json
 from pyproj import Transformer
 from pprint import pprint 
 from math import sqrt, inf
-from statistics import mean 
+from statistics import mean, median
 
 wgs2jtsk = Transformer.from_crs(4326,5514, always_xy = True)
 vzdalesnot = 0
@@ -71,5 +71,6 @@ with open("adresy_kontejnery.geojson", "w", encoding = "utf-8") as nacteni:
 
 nejkratsi_vzdalenosti = [adresa["properties"]["vzdalenost k nejblizsimu kontejneru v metrech"] for adresa in data_adresy["features"]]
 
-print("Průměrná vzdálenost ke kontejneru na tříděný odpad je " + str(mean(nejkratsi_vzdalenosti)))
-print("Nejdále od kontejneru na tříděný odpad je to " + str(max_vzdalenost) + "metrů a to ze vchodu na adrese " + str(adresa_nejdale))
+print("Průměrná vzdálenost ke kontejneru je " + str(round(mean(nejkratsi_vzdalenosti))) + " metrů.")
+print("Madián nejkratších vzdáleností ke kontejneru je " + str(round(median(nejkratsi_vzdalenosti))) + " metrů")
+print("Nejdále od kontejneru je to " + str(round(max_vzdalenost)) + " metrů a to ze vchodu na adrese " + str(adresa_nejdale))
