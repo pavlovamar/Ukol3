@@ -14,6 +14,7 @@ vzdalesnot = 0
 nejkratsi_vzdalenost = inf
 nejblizsi_kontejner = None
 novy_soubor = []
+max_vzdalenost = 0
 try:
     with open("adresy.geojson", encoding = "utf-8") as f, \
         open("kontejnery.geojson", encoding = "utf-8") as h:
@@ -42,8 +43,14 @@ try:
                     if vzdalenost < nejkratsi_vzdalenost or nejkratsi_vzdalenost == 0:
                         nejkratsi_vzdalenost = vzdalenost
                         nejblizsi_kontejner = soucasny_kontejner
-                        print(nejkratsi_vzdalenost)
+                    
+                        
+            adresa['properties']['vzdalenost k nejblizsimu kontejneru v metrech'] = round(nejkratsi_vzdalenost)
             adresa['properties']['kontejner'] = nejblizsi_kontejner
+            if nejkratsi_vzdalenost > max_vzdalenost:
+                max_vzdalenost = nejkratsi_vzdalenost
+                adresa_nejdale = soucasna_adresa
+
             nejkratsi_vzdalenost = 0
             novy_soubor.append(adresa)
 
@@ -57,7 +64,12 @@ try:
 except FileNotFoundError:
     print("Soubor nebyl nalezen!")
 
+
+
 with open("adresy_kontejnery.geojson", "w", encoding = "utf-8") as nacteni:
     json.dump(novy_soubor, nacteni, ensure_ascii = False, indent = 2)
 
+nejkratsi_vzdalenosti = [adresa["properties"]["vzdalenost k nejblizsimu kontejneru v metrech"] for adresa in data_adresy["features"]]
 
+print("Průměrná vzdálenost ke kontejneru na tříděný odpad je " + str(mean(nejkratsi_vzdalenosti)))
+print("Nejdále od kontejneru na tříděný odpad je to " + str(max_vzdalenost) + "metrů a to ze vchodu na adrese " + str(adresa_nejdale))
