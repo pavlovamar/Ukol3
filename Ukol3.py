@@ -51,7 +51,6 @@ try:
                 adresa_nejdale = soucasna_adresa
             nejkratsi_vzdalenost = 0
             novy_soubor.append(adresa)
-
 except FileNotFoundError:
     print("Soubor nebyl nalezen!")
 except PermissionError:
