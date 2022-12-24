@@ -8,9 +8,10 @@ from pyproj import Transformer
 from pprint import pprint 
 from math import sqrt, inf
 from statistics import mean, median
+from json.decoder import JSONDecodeError
 
 wgs2jtsk = Transformer.from_crs(4326,5514, always_xy = True)
-vzdalesnot = 0
+vzdalenost = 0
 nejkratsi_vzdalenost = inf
 nejblizsi_kontejner = None
 novy_soubor = []
@@ -45,33 +46,23 @@ try:
                         nejblizsi_kontejner = soucasny_kontejner
                 elif pristup == "obyvatelum domu":
                     nejkratsi_vzdalenost = 0
-                
             if nejkratsi_vzdalenost > 10000:
                 print("Nejbližší kontejner je dále než 10 km!")
-                quit()
-
-                    
-                        
+                quit()     
             adresa['properties']['vzdalenost k nejblizsimu kontejneru v metrech'] = round(nejkratsi_vzdalenost)
             adresa['properties']['kontejner'] = nejblizsi_kontejner
             if nejkratsi_vzdalenost > max_vzdalenost:
                 max_vzdalenost = nejkratsi_vzdalenost
                 adresa_nejdale = soucasna_adresa
-
             nejkratsi_vzdalenost = 0
             novy_soubor.append(adresa)
 
-
-            
-
-         
-
-
-
 except FileNotFoundError:
     print("Soubor nebyl nalezen!")
-
-
+except PermissionError:
+    print("Není oprávnění tento soubor otevřít!")
+except JSONDecodeError:
+    print("Soubor není validní!")
 
 with open("adresy_kontejnery.geojson", "w", encoding = "utf-8") as nacteni:
     json.dump(novy_soubor, nacteni, ensure_ascii = False, indent = 2)
