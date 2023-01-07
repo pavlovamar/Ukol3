@@ -54,10 +54,11 @@ try:
                     min_vzdalenost = vzdalenost
                     nejblizsi_kontejner = soucasny_kontejner
 
-                elif pristup == "obyvatelum domu":                                  # Určení vzdálenosti pro kontejnery přístupné pouze obyvatelům domu
-                    min_vzdalenost = 0
+            elif pristup == "obyvatelum domu":                                  # Určení vzdálenosti pro kontejnery přístupné pouze obyvatelům domu
+                min_vzdalenost = 0
+
         if min_vzdalenost > 10000:
-            print(f"Pro adresu {soucasna_adresa} je nejbližší kontejner dále než 10 km! Zkuste načíst jiný soubor")
+            print(f"Pro adresu {soucasna_adresa} je nejbližší kontejner dále než 10 km! Zkuste načíst jiný soubor.")
             quit()
         
         if min_vzdalenost > max_vzdalenost:                                         # Určení maximální nejkratší vzdálenosti                      
@@ -68,6 +69,7 @@ try:
         adresa['properties']['vzdalenost ke kontejneru v m'] = round(min_vzdalenost)
         novy_soubor.append(adresa)
         min_vzdalenost = 0
+
 except KeyError:
     print("V souboru je chyba!")
     quit()
